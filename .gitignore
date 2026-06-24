@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Project artifacts
+data/*.db
+data/*.csv
+data/*.parquet
+models/*.joblib
+
+# uv – lock file IS committed (reproducible builds); cache is not
+.uv/
+
+# requirements.txt superseded by pyproject.toml + uv.lock
+requirements.txt
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/

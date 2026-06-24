@@ -1,0 +1,63 @@
+services:
+
+  # ── One-shot init: seed DB + train models ─────────────────────────────────
+  # Runs to completion before the other services start (depends_on condition).
+  init:
+    build:
+      context: .
+      target: api          # reuse the api image; no extra layers needed
+    volumes:
+      - ct_data:/app/data
+      - ct_models:/app/models
+    environment:
+      DATABASE_URL: sqlite:////app/data/control_tower.db
+      SIM_SEED: "42"
+      SIM_DAYS: "30"
+      SIM_TRUCKS: "50"
+    command: >
+      sh -c "
+        python -m control_tower.pipeline.seed &&
+        python -m control_tower.ai.train
+      "
+    restart: "no"
+
+  # ── FastAPI service ────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      target: api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ct_data:/app/data
+      - ct_models:/app/models
+    environment:
+      DATABASE_URL: sqlite:////app/data/control_tower.db
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ── React frontend (nginx + static build) ────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      target: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      api:
+        condition: service_healthy
+      init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  ct_data:    # shared SQLite DB between all services
+  ct_models:  # shared trained model artefacts (.joblib)

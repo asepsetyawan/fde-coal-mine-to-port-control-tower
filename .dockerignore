@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+# Generated artifacts (created fresh inside the container by the init service)
+data/
+models/
+
+# uv cache
+.uv/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Git
+.git/
+.gitignore
+
+# Docs / dev files that don't belong in the image
+README.md
+Makefile
+*.md

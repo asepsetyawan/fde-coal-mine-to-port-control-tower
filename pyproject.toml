@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "control-tower"
+version = "0.1.0"
+description = "Coal Mine-to-Port Control Tower - an FDE portfolio project (simulated)"
+requires-python = ">=3.10"
+dependencies = [
+    # Core data
+    "pandas==2.2.2",
+    "numpy==1.26.4",
+    # Storage / ORM
+    "SQLAlchemy==2.0.30",
+    # ML
+    "scikit-learn==1.5.0",
+    "joblib>=1.3",
+    # Optimization (blending LP)
+    "PuLP==2.8.0",
+    # API
+    "fastapi==0.111.0",
+    "uvicorn[standard]==0.30.1",
+    "pydantic==2.7.4",
+    # Config / utils
+    "python-dotenv==1.0.1",
+    "requests==2.32.3",
+    # LLM assistant (falls back to rule engine without a key)
+    "openai==1.35.7",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.sql", "*.json"]
+
+[tool.uv]
+# uv generates uv.lock; the lockfile is committed so Docker builds are
+# byte-for-byte reproducible without network access (after the first pull).
+package = true
