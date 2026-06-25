@@ -12,6 +12,8 @@ engineering, which is exactly the judgment an enterprise FDE is hired for.
 > the scalpel, not the hammer, applied to demurrage risk, quality blending, and
 > equipment failure, each mapped to a specific dollar lever.*
 
+![Control Tower dashboard](assets/control-tower.png)
+
 ---
 
 ## What it demonstrates
@@ -171,15 +173,8 @@ Every lever maps to a specific dollar leak. Figures below are **modeled from the
 
 ## Architecture
 
-```
- SIMULATORS            STORAGE          PIPELINE           AI LAYER             SERVING
- ───────────           ───────          ────────           ────────             ───────
- fleet telemetry                        reconciliation     demurrage   (ML)
- stage tonnage         SQLite           (mass balance)     blending    (LP)     FastAPI /docs
- lab quality     ────► or Postgres ───► loss %        ───► pdm         (ML) ──► REST API     ───► React UI
- barge AIS             (DATABASE_URL)                       anomaly     (IF)                       (nginx + Vite)
- vessels + laycan                                          assistant   (LLM)
-```
+![Mine-to-Port Control Tower architecture](assets/architecture.jpg)
+
 
 | Layer | What it does | Tech |
 |---|---|---|
